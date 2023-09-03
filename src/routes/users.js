@@ -4,6 +4,7 @@ const userController = require('../controllers/userController');
 const { body, validationResult } = require('express-validator');
 const moment = require('moment');
 
+// Ruta para registrar usuarios
 router.post('/register',
 [
     body('fullName').notEmpty().withMessage('Full name is required'),
@@ -22,5 +23,15 @@ router.post('/register',
   ],
   userController.register
 );
+
+// Ruta para iniciar sesión
+router.post('/login',
+[
+    body('email').isEmail().withMessage('Valid email is required'),
+    body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+],
+userController.login
+);
+
 
 module.exports = router;
