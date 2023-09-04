@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes/routes'); // Asegúrate de que la ruta sea la correcta
@@ -8,12 +9,13 @@ const app = express();
 app.use(express.json());
 
 // Conexión a MongoDB
-mongoose.connect('mongodb://localhost:27017/nombreDeTuBaseDeDatos', {useNewUrlParser: true, useUnifiedTopology: true})
+const dbURI = process.env.DB_CONNECT;
+mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => {
-    console.log('Conectado a la base de datos MongoDB');
+    console.log('Conectado a la base de datos MongoDB en la nube');
   })
   .catch(err => {
-    console.error('Error al conectar con MongoDB', err);
+    console.error('Error al conectar con MongoDB en la nube', err);
   });
 
 // Usar las rutas
