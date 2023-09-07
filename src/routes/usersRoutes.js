@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const { body, validationResult } = require('express-validator');
 const moment = require('moment');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 // Ruta para registrar usuarios
 router.post('/register',
@@ -24,6 +25,9 @@ router.post('/register',
   userController.register
 );
 
+
+router.patch('/activate/:userId', userController.activateUser);
+
 // Ruta para iniciar sesión
 router.post('/login',
 [
@@ -32,6 +36,17 @@ router.post('/login',
 ],
 userController.login
 );
+
+// Ruta para actualizar la informacion del usuario
+router.put('/me', authMiddleware, userController.updateUser);
+
+// Ruta para obtener información del usuario, protegida
+router.get('/me', authMiddleware, userController.getUserInfo);
+
+
+router.get('/usersByAge', authMiddleware, userController.getUsersByAge);
+
+
 
 
 module.exports = router;
