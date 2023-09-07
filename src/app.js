@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const routes = require('./routes/routes'); // Asegúrate de que la ruta sea la correcta
+const routes = require('./routes/routes');
+const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
 
@@ -23,14 +24,17 @@ mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
   });
 
 // Usar las rutas
-app.use('/api', routes);
+app.use('/', routes);
 
+// Ruta de prueba
 app.post('/test', (req, res) => {
-    res.send('Test successful');
-  });
+  res.send('Test successful');
+});
 
 // Iniciar el servidor de Express
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
+app.use(errorHandler);
