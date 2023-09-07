@@ -6,4 +6,5 @@ const userRoutes = require('./users');
 // Montar las rutas específicas del usuario
 router.use('/user', userRoutes);
 
+
 module.exports = router;

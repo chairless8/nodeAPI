@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
   const errors = validationResult(req);
@@ -36,3 +37,31 @@ exports.register = async (req, res) => {
     res.status(500).json({ message: 'Error registering user', error });
   }
 };
+
+
+exports.login = async (req, res) => {
+    // 1. Validar datos del usuario (esto debería hacerse con express-validator en las rutas)
+    const { email, password } = req.body;
+  
+    // 2. Buscar usuario por email
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
+  
+      // 3. Comparar contraseñas
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
+  
+      // 4. Crear token (opcional)
+      const token = jwt.sign({ id: user._id }, 'your_secret_key', { expiresIn: '1h' });
+  
+      // 5. Responder al cliente
+      res.status(200).json({ message: 'Logged in successfully', token });
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error', error });
+    }
+  };
