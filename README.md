@@ -5,7 +5,7 @@ Este proyecto es el backend para el examen de SR Fullstack Engineer. Provee una 
 Enlaces Importantes
 Repositorio de GitHub: https://github.com/chairless8/nodeAPI
 Backend en Fly.io: https://node-code-challenge.fly.dev/
-Documentación de Postman: Postman Documentation
+Documentación de Postman: [Postman Documentation](https://documenter.getpostman.com/view/13633048/2s9YBxYvLk#intro)
 Instrucciones Rápidas para Evaluadores
 Clone el repositorio.
 Ejecute npm install.
