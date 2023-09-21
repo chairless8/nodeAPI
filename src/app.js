@@ -26,6 +26,9 @@ mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
 // Usar las rutas
 app.use('/', routes);
 
+// Manejo de errores
+app.use(errorHandler);
+
 // Ruta de prueba
 app.post('/test', (req, res) => {
   res.send('Test successful');
@@ -37,4 +40,4 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
-app.use(errorHandler);
+
