@@ -35,6 +35,12 @@ router.post('/task/:id/complete', taskController.completeTask);
 router.post('/task/:id/uncomplete', taskController.uncompleteTask); // Descompletar tarea
 router.get('/task/:id/subtasks', taskController.getSubTasks);
 
+// Ruta para agregar un árbol de tareas
+router.post('/task/add-tree', taskController.addTaskTree);
+router.get('/task/:id/with-subtasks', taskController.getTaskWithSubtasks);
+
+
+
 // Rutas para Progreso
 router.post('/progress/create', progressController.createProgress);
 router.get('/progress/:id', progressController.getProgress);

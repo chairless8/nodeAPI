@@ -109,3 +109,98 @@ exports.getHabitTasks = async (req, res, next) => {
       next(error);
   }
 };
+
+// Controlador para agregar un árbol de tareas
+exports.addTaskTree = async (req, res, next) => {
+  try {
+    // El cuerpo de la solicitud debe contener el JSON anidado o array anidado del árbol de tareas
+    const taskTree = req.body;
+
+    // Llamar a una función recursiva para crear las tareas en el árbol
+    const createdTasks = await createTasksRecursive(null, taskTree);
+
+    res.status(201).json(createdTasks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Función recursiva para crear tareas en el árbol
+const createTasksRecursive = async (parentId, taskDataArray) => {
+  const createdTasks = [];
+
+  for (const taskData of taskDataArray) {
+    // Crea una nueva tarea con la información proporcionada y establece el parentId
+    const newTaskData = {
+      ...taskData,
+      parentId,
+    };
+
+    const newTask = new Task(newTaskData);
+    await newTask.save();
+
+    // Si la tarea tiene subtareas, llamar recursivamente para crearlas
+    if (taskData.subtasks && taskData.subtasks.length > 0) {
+      // Imprimimos las tareas que vamos a crear taskData.subtasks
+      console.log('Tareas que vamos a crear', taskData.subtasks);
+      const subtasks = await createTasksRecursive(newTask._id, taskData.subtasks);
+      newTask.subtasks = subtasks;
+      await newTask.save();
+    }
+
+    createdTasks.push(newTask);
+  }
+
+  return createdTasks;
+};
+
+// Obtener una tarea con su árbol de subtareas (función recursiva)
+exports.getTaskWithSubtasks = async (req, res, next) => {
+  try {
+    const taskId = req.params.id;
+
+    // Función recursiva para obtener todas las subtareas de una tarea
+    const getSubtasksRecursive = async (taskId) => {
+      const task = await Task.findById(taskId);
+
+      if (!task) {
+        return null;
+      }
+
+      // Buscar todas las subtareas de la tarea actual
+      const subtasks = await Task.find({ parentId: taskId });
+
+      // Inicializar un objeto para almacenar la tarea actual y sus subtareas
+      const taskWithSubtasks = {
+        task,
+        subtasks: [],
+      };
+
+      // Recorrer las subtareas y llamar a la función recursiva para cada una
+      for (const subtask of subtasks) {
+        const subtaskWithSubtasks = await getSubtasksRecursive(subtask._id);
+        if (subtaskWithSubtasks) {
+          taskWithSubtasks.subtasks.push(subtaskWithSubtasks);
+        }
+      }
+
+      return taskWithSubtasks;
+    };
+
+    // Llamar a la función recursiva para obtener la tarea con su árbol de subtareas
+    const taskWithSubtasks = await getSubtasksRecursive(taskId);
+
+    if (!taskWithSubtasks) {
+      const error = new Error('Task not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json(taskWithSubtasks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+

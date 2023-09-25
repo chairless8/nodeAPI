@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
+const tree = require('mongoose-tree');
 
 const TaskSchema = new mongoose.Schema({
     title: { type: String, required: true },
+    parentId : { type: mongoose.Schema.Types.ObjectId, ref: 'Task', default: null },
     description: { type: String },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     isCompleted: { type: Boolean, default: false },
@@ -15,5 +17,7 @@ const TaskSchema = new mongoose.Schema({
         default: null // Si la tarea no está asociada a un hábito en particular.
     }
 }, { timestamps: true });
+
+TaskSchema.plugin(tree);
 
 module.exports = mongoose.model('Task', TaskSchema);
