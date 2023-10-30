@@ -8,6 +8,13 @@ const taskController = require('../controllers/taskController');
 const progressController = require('../controllers/progressController');
 const tagController = require('../controllers/tagController');
 // const identityController = require('../controllers/identityController'); // Opcional por ahora
+const audioProccesController = require('../controllers/audioProcces/mainController');
+
+router.post('/test', async (req, res) => {
+  return 'test result';
+});
+
+router.post('/transcribe', audioProccesController.processAudio);
 
 // Rutas para Usuario
 router.post('/user/create', userController.createUser);

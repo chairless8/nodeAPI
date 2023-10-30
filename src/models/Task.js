@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const tree = require('mongoose-tree');
 
 const TaskSchema = new mongoose.Schema({
     title: { type: String, required: true },
@@ -17,7 +16,5 @@ const TaskSchema = new mongoose.Schema({
         default: null // Si la tarea no está asociada a un hábito en particular.
     }
 }, { timestamps: true });
-
-TaskSchema.plugin(tree);
 
 module.exports = mongoose.model('Task', TaskSchema);
